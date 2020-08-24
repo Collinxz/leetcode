@@ -284,3 +284,39 @@ int diameterOfBinaryTree(TreeNode* root) {
     DOBTHelper(root, res);
     return res;
 }
+
+/* Lowest Common Ancestor of a Binary Tree */
+TreeNode* findLCA(TreeNode* node, TreeNode*p, TreeNode*q, bool& flag){
+    if(!node)
+        return NULL;
+    TreeNode* l = findLCA(node->left, p, q, flag);
+    TreeNode* r = findLCA(node->right, p, q, flag);
+    if(flag){
+        if(l)
+            return l;
+        else
+            return r;
+    }
+    else{
+        if(l && r){
+            flag = true;
+            return node;
+        }
+        else if(l || r){
+            if(node->val == p->val || node->val == q->val)
+                flag = true;
+                return node;
+        }
+        else{
+            if(node->val == p->val || node->val == q->val)
+                return node;
+            else
+                return NULL;
+        }
+    }
+    return NULL;
+}
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    bool flag = false;
+    return findLCA(root, p, q, flag);
+}

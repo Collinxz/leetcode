@@ -225,3 +225,67 @@ vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
     }
     return people;
 }
+
+
+/* 435. Non-overlapping Intervals */
+static int comp435(const vector<int> &a, const vector<int> &b){
+    return a[1] < b[1]; 
+}
+
+int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+    int res = 0;
+    sort(intervals.begin(), intervals.end(), comp435);
+    int ed = INT_MIN;
+    for(vector<int> inl : intervals){
+        if(inl[0] < ed){
+            res += 1;
+        }
+        else{
+            ed = inl[1];
+        }
+    }
+    return res;
+}
+
+/* 984. String Without AAA or BBB */
+string strWithout3a3b(int A, int B)
+{
+    string res = "";
+    bool flag = A > B;
+    while (A > 0 || B > 0)
+    {
+        if (B > 0 && A >= 2 * B)
+        {
+            res += "aab";
+            A -= 2;
+            B -= 1;
+            flag = true;
+        }
+        else if (A > 0 && B >= 2 * A)
+        {
+            res += "bba";
+            A -= 1;
+            B -= 2;
+            flag = false;
+        }
+        else
+        {
+            char fir = 'a', sed = 'b';
+            int fn = A, sn = B;
+            if (!flag)
+            {
+                fir = 'b';
+                sed = 'a';
+                fn = B;
+                sn = A;
+            }
+            for (int i = 0; i < min(fn, 1); ++i)
+                res += fir;
+            for (int i = 0; i < min(sn, 1); ++i)
+                res += sed;
+            A -= 1;
+            B -= 1;
+        }
+    }
+    return res;
+}
