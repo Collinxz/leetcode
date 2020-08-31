@@ -2,26 +2,31 @@
 
 using namespace std;
 
-struct node {
+struct node
+{
     int val;
     int keyCount = 0;
-    vector<struct node*> keys;
-    node() {
+    vector<struct node *> keys;
+    node()
+    {
         val = 0;
     }
-    node(const int keyNum) {
+    node(const int keyNum)
+    {
         val = 0;
         keyCount = keyNum;
         for (int i = 0; i < keyCount; ++i)
             keys.push_back(NULL);
     }
 };
-struct node* head = new node(2);
+struct node *head = new node(2);
 
-void insertTrie(int num) {
-    struct node* ptr = head;
+void insertTrie(int num)
+{
+    struct node *ptr = head;
     int i = 31;
-    while (i >= 0) {
+    while (i >= 0)
+    {
         bool t = (num & (1 << i));
         if (!ptr->keys[t])
             ptr->keys[t] = new node(2);
@@ -31,10 +36,12 @@ void insertTrie(int num) {
     ptr->val = num;
 }
 
-int checkTrie(int num) {
-    struct node* ptr = head;
+int checkTrie(int num)
+{
+    struct node *ptr = head;
     int i = 31;
-    while (i >= 0) {
+    while (i >= 0)
+    {
         bool t = (num & (1 << i));
         if (ptr->keys[1 - t])
             ptr = ptr->keys[1 - t];
@@ -45,11 +52,13 @@ int checkTrie(int num) {
     return ptr->val;
 }
 
-int findMaximumXOR(vector<int>& nums) {
+int findMaximumXOR(vector<int> &nums)
+{
     if (nums.size() < 2)
         return 0;
     int res = 0;
-    for (int num : nums) {
+    for (int num : nums)
+    {
         insertTrie(num);
         res = max(res, num ^ checkTrie(num));
     }

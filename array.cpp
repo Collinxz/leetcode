@@ -92,3 +92,75 @@ string replaceWords(vector<string> &dictionary, string sentence)
     res += root;
     return res;
 }
+
+/* 1004. Max Consecutive Ones III */
+int longestOnes(vector<int> &A, int K)
+{
+    int res = 0;
+    int tmp = 0;
+    int i = 0, j = 0;
+    while (j < A.size())
+    {
+        if (A[j] == 1)
+            tmp++;
+        else
+        {
+            if (K > 0)
+            {
+                K--;
+                tmp++;
+            }
+            else
+            {
+                while (A[i] != 0 && i <= j)
+                {
+                    i++;
+                    tmp--;
+                }
+                if (A[i] == 0)
+                    i++;
+            }
+        }
+        j++;
+        res = max(res, tmp);
+    }
+    return res;
+}
+
+/* 57. Insert Interval */
+vector<vector<int>> insert(vector<vector<int>> &intervals, vector<int> &newInterval)
+{
+    vector<vector<int>> res;
+    bool flag = true;
+    for (auto interval : intervals)
+    {
+        if (interval[0] > newInterval[1])
+        {
+            if (flag)
+            {
+                res.push_back(newInterval);
+                flag = false;
+            }
+            res.push_back(interval);
+        }
+        if (interval[1] < newInterval[0])
+            res.push_back(interval);
+        else
+        {
+            if (interval[0] < newInterval[0])
+            {
+                newInterval[0] = interval[0];
+            }
+            if (interval[1] >= newInterval[1])
+            {
+                newInterval[1] = interval[1];
+            }
+        }
+    }
+    if (flag)
+    {
+        res.push_back(newInterval);
+        flag = false;
+    }
+    return res;
+}
