@@ -2,14 +2,123 @@
 
 using namespace std;
 
-#define MAXN 100010
-#define INF 10000009
+#define MAXN 10010
+#define INF 0x3f3f3f3f
 #define MOD 10000007
 #define LL long long
 #define in(a) a=read()
 #define REP(i,k,n) for(long long i=k;i<=n;i++)
 #define DREP(i,k,n) for(long long i=k;i>=n;i--)
 #define cl(a) memset(a,0,sizeof(a))
+
+/* Dijkstra */
+bool vis[MAXN];
+int pre[MAXN];
+vector<vector<int>> cost(MAXN, vector<int>(MAXN, INF));
+// 记录beg到图里每个点的距离
+int lowcost[MAXN];
+
+void Dijkstra(int n, int beg){
+    /* init */
+    for(int i = 1; i <= n; ++i){
+        lowcost[i] = INF;
+        vis[i] = false;
+        pre[i] = -1;
+    }
+    lowcost[beg] = 0;
+
+    for(int j = 1; j <= n; ++j){
+        int k = -1;
+        int Min = INF;
+        for(int i = 1; i <= n; ++i){
+            if(!vis[i] && lowcost[i] < Min){
+                Min = lowcost[i];
+                k = i;
+            }
+        }
+        if(k == -1) break;
+        vis[k] = true;
+        for(int i = 1; i <= n; ++i){
+            if(!vis[i] && lowcost[k] + cost[k][i] < lowcost[i]){
+                lowcost[i] = lowcost[k] + cost[k][i];
+                pre[i] = k;
+            }
+        }
+
+        for(int i = 1; i <= n; ++i){
+            cout << lowcost[i] << " ";
+        }
+        cout << endl;
+    }
+}
+
+
+/* bellman_ford */
+vector<int> dist(MAXN, 0);
+
+struct Edge{
+    int u, v;
+    int cost;
+    Edge(int _u = 0, int _v = 0, int _cost = 0):u(_u),v(_v),cost(_cost){}
+};
+
+vector<Edge> E;
+
+bool bellMan_ford(int start, int n){
+    for(int i = 1; i <= n; ++i)
+        dist[i] = INF;
+    dist[start] = 0;
+    for(int i = 0; i < n; ++i){
+        bool flag = false;
+        for(int j = 0; j < E.size(); ++j){
+            int u = E[j].u;
+            int v = E[j].v;
+            int cost = E[j].cost;
+            if(dist[v] > dist[u] + cost){
+                dist[v] = dist[u] + cost;
+                flag = true;
+            }
+        }
+        if(!flag) return true; //没有负环回路
+    }
+    for(int j = 0; j < E.size(); ++j){
+        if(dist[E[j].v] > dist[E[j].u] + E[j].cost)
+            return false; //有负环回路
+    }
+
+    return true;
+}
+
+/* prim */
+bool visPrim[MAXN];
+int lowc[MAXN];
+vector<vector<int>> costPrim(MAXN, vector<int>(MAXN, INF));
+
+int Prim(int n){
+    int ans = 0;
+    memset(visPrim, false, sizeof(vis));
+    vis[0] = true;
+    for(int i = 1; i < n; ++i)
+        lowc[i] = cost[0][i];
+    for(int i = 1; i < n; ++i){
+        int minc = INF;
+        int p = -1;
+        for(int j = 0; j < n; ++j){
+            if(!vis[j] && minc > lowc[j]){
+                minc = lowc[j];
+                p = j;
+            }
+        }
+        if(minc == INF) return -1; //原图不连通
+        ans += minc;
+        vis[p] = true;
+        for(int j = 0; j < n; ++j){
+            if(!vis[j] && lowc[j] > cost[p][j])
+                lowc[j] = cost[p][j];
+        }
+    }
+    return ans;
+}
 
 /* Inverse element */
 long long quickpow(long long a, long long b)
@@ -148,7 +257,15 @@ inline long long search(long long i,long long l,long long r){
 
 int main()
 {
-    long long a = 98765432112;
-    cout << inv(a) << endl;
+    cost[1][2] = 1;
+    cost[2][3] = 4;
+    cost[2][5] = 2;
+    cost[3][4] = 3;
+    cost[4][5] = 2;
+    cost[5][3] = 1;
+    Dijkstra(5, 5);
+    for(int i = 1; i <= 5; ++i){
+        cout << lowcost[i] << endl;
+    }
     return 0;
 }
